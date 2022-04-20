@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <form>
+      <h1 style="color: orange">Class Marksheet</h1>
+      <label class="label">Họ tên</label>&nbsp; &nbsp; &nbsp; &nbsp;
+      <input id="name" type="text" width="100%" /><br /><br />
+      <label class="label">Điểm Toán</label>
+      <input id="math" type="number" width="100%" /><br /><br />
+      <label class="label">Điểm Lý</label>&nbsp; &nbsp;
+      <input id="physical" type="number" width="100%" /> <br /><br />
+      <label class="label">Điểm Hóa</label>
+      <input id="chemistry" type="number" width="100%" /><br /><br />
+      <button style="background-color: orange" type="button" id="nhap">
+        Nhập</button
+      ><br /><br />
+    </form>
+    <table border="1" id="myTable">
+      <thead>
+        <th>STT</th>
+        <th>Họ tên</th>
+        <th>Toán</th>
+        <th>Lý</th>
+        <th>Hóa</th>
+        <th>Trung bình</th>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <br /><br />
+
+    <div id="button">
+      <button type="button" id="Ave">Tính điểm trung bình</button>
+      <button type="button" id="btnhsg">Xác định học sinh giỏi</button>
+      <button type="button" id="btnhsk">Xác định học sinh khá</button>
+      <button type="button" id="btnhstb">Xác định học sinh trung bình</button>
+      <button type="button" id="btnhsy">Xác định học sinh yếu</button>
+      <button type="button" id="dltRow">Xóa hàng</button>
+      <button type="button" id="print">In</button>
+      <button type="button" id="sortAsc">Sắp xếp điểm tăng dần</button>
+      <button type="button" id="sortDesc">Sắp xếp điểm giảm dần</button>
+    </div>
+
+    <script text="text/javascript">
+      var i = 0;
+      //Khởi tạo hàm cho nút nhập dữ liệu//
+      $(document).ready(function () {
+        $("#nhap").on("click", function () {
+          const name = $("#name").val();
+          const math = $("#math").val();
+          const physical = $("#physical").val();
+          const chemistry = $("#chemistry").val();
+          const ave = "?";
+          //thêm dòng đồng thời gán giá trị từ input vào các cell trên mỗi dòng//
+          const addRow =
+            "<tr><td>" +
+            (i += 1) +
+            "</td><td>" +
+            name +
+            "</td><td>" +
+            math +
+            "</td><td>" +
+            physical +
+            "</td><td>" +
+            chemistry +
+            "</td><td>" +
+            ave +
+            "</td></tr>";
+          $("#myTable tbody").append(addRow);
+          //Trả giá trị của bảng input về ""//
+          $("input").val("");
+        });
+      });
+      //Tạo hàm tính điểm trung bình//
+      $(document).ready(function () {
+        $("#Ave").on("click", function () {
+          $("tbody tr").each(function () {
+            const math = parseFloat($(this).children().eq(2).text());
+            const physical = parseFloat($(this).children().eq(3).text());
+            const chemistry = parseFloat($(this).children().eq(4).text());
+            const dtb = ((math + physical + chemistry) / 3).toFixed(1);
+            $(this).children().eq(5).text(dtb);
+          });
+        });
+      });
+      // Tao ham tinh HSG//
+      $(document).ready(function () {
+        $("#btnhsg").on("click", function () {
+          $("tbody tr").each(function () {
+            const dtb = parseFloat($(this).children().eq(5).text());
+            if (dtb >= 8) {
+              $(this).css("background-color", "red");
+            }
+          });
+        });
+      });
+      // Tao hamf tinh HSK//
+      $(document).ready(function () {
+        $("#btnhsk").on("click", function () {
+          $("tbody tr").each(function () {
+            const dtb = parseFloat($(this).children().eq(5).text());
+            if (dtb >= 7 && dtb < 8) {
+              $(this).css("background-color", "pink");
+            }
+          });
+        });
+      });
+      // Tao ham tinh HSTB//
+      $(document).ready(function () {
+        $("#btnhstb").on("click", function () {
+          $("tbody tr").each(function () {
+            const dtb = parseFloat($(this).children().eq(5).text());
+            if (dtb >= 5 && dtb < 7) {
+              $(this).css("background-color", "lightskyblue");
+            }
+          });
+        });
+      });
+      //Tao ham tinh HSY//
+      $(document).ready(function () {
+        $("#btnhsy").on("click", function () {
+          $("tbody tr").each(function () {
+            const dtb = parseFloat($(this).children().eq(5).text());
+            if (dtb < 5) {
+              $(this).css("background-color", "gray");
+            }
+          });
+        });
+      });
+      //Tao ham xoa dong//
+      $(document).ready(function () {
+        $("#dltRow").on("click", function () {
+          const row = parseFloat(prompt("Nhập số thứ tự cần xóa"));
+          $("tbody tr:eq(" + (row - 1) + ")").remove();
+          //Index lai STT//
+          $("tbody tr").each(function () {
+            $(this)
+              .children()
+              .eq(0)
+              .text($(this).index() + 1);
+          });
+        });
+      });
+      //Tao ham cho nut in//
+      function printData() {
+        var printTable = document.getElementById("myTable");
+        newWin = window.open("");
+        newWin.document.write(printTable.outerHTML);
+        newWin.print();
+        newWin.close();
+      }
+      $("#print").click(function () {
+        printData();
+      });
+
+      $(document).ready(function(){
+        $("#sortAsc").on("click", function () {
+        var arrayNode = [];
+        var rows = $("tbody tr");
+        for (var row in rows) {
+          if (rows[row].nodeType == 1) {
+            arrayNode.push(rows[row]);
+          }
+        }
+
+        $("tbody tr").each(function () {
+          arrayNode.sort(function (v1, v2) {
+            const l1 = $(v1).children().eq(5).text();
+            const l2 = $(v2).children().eq(5).text();
+            return l1 - l2;
+          });
+        });
+        $("table").text()="";
+        for (var i = 0; i < arrayNode.length; i++) {
+            $('tbody tr').text() += arrayNode[i].text();
+        //   arrayNode[i + 1].cells[0].innerHTML = sttNum += 1;
+        }
+
+
+      });
+      })
+    </script>
+  </body>
+</html>
